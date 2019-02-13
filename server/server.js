@@ -208,36 +208,38 @@ app.get('/api/product/article_by_id',(req,resp) => {
         
         return resp.status(200).send(docs);
     })
+    
+
+}) 
 
     //LIST BY ARRIVAL
     //api/products/articles?sortBy=createdAt&order=desc&limit=4&skip=2
 
-    app.get('/api/products',(req,resp) => {
-        let order = req.query.order ? req.query.order : 'asc';
-        let sortBy = req.query.sortBy ? req.query.sortBy :'_id';
+app.get('/api/product/arrival',(req,resp) => {
+    let order = req.query.order ? req.query.order : 'asc';
+    let sortBy = req.query.sortBy ? req.query.sortBy :'_id';
 
-        let limit = req.query.limit ? req.query.limit : 5;
-        let skip = req.query.limit ? req.query.skip : 0;
+    let limit = req.query.limit ? parseInt(req.query.limit) : 5;
+    let skip = req.query.skip ? parseInt(req.query.skip) : 0;
 
-        Product.find()
-        .populate('brand')
-        .populate('wood')
-        .sort([[sortBy,order]])
-        .limit(limit)
-        .skip(skip)
-        .exec((err,articles) => {
-            if(err) return resp.status(400).send(err);
-            resp.send(articles)
-        })
-
-
-
+    Product.find()
+    .populate('brand')
+    .populate('wood')
+    .sort([[sortBy,order]])
+    .limit(limit)
+    .skip(skip)
+    .exec((err,articles) => {
+        //if(err) return resp.status(400).send(err);
+    
+        return resp.send(articles)
     })
+})
 
-    //LIMIT BY SELL
-    //api/product/articles?sortBy=sold&order=desc&limit=4
+//LIMIT BY SELL
+//api/product/articles?sortBy=sold&order=desc&limit=4
 
-}) 
+
+
 //**********************************************************/
 //*----------------------END OF PRODUCTS-------------------*/
 //**********************************************************/
