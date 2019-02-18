@@ -99,4 +99,4 @@ class SignIn extends Component {
   }
 }
 
-export default connect()(withRouter(SignIn));
+export default connect()(withRouter(SignIn))
