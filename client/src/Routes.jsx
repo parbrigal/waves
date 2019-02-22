@@ -4,6 +4,7 @@ import Login from './components/login/Login';
 import Register from './components/register/Register';
 import DashBoard from './components/user/Dashboard';
 import Layout from './hoc/Layout';
+import Auth from './hoc/Auth';
 import { Switch, Route } from 'react-router-dom';
 
 
@@ -11,10 +12,10 @@ const Routes = () => {
   return (
     <Layout>
       <Switch>
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
-        <Route path="/user/dashboard" component={DashBoard} />
-        <Route path="/" exact component={Home} />
+        <Route path="/login" component={Auth(Login,'private')} />
+        <Route path="/register" component={Auth(Register,'')} />
+        <Route path="/user/dashboard" component={Auth(DashBoard,'')} />
+        <Route path="/" exact component={Auth(Home,'public')} />
       </Switch>
     </Layout>
   );

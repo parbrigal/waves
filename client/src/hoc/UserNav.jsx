@@ -4,15 +4,15 @@ import { Link } from 'react-router-dom';
 
 const links = [
     {
-        name:'My account',
+        name:'My Account',
         linkTo:'/user/dashboard'
     },
     {
-        name:'User info',
+        name:'User Info',
         linkTo:'/user/profile'
     },
     {
-        name:'My cart',
+        name:'My Cart',
         linkTo:'/user/my_cart'
     },
 
@@ -29,7 +29,7 @@ const UserNav = (props) => {
     <div className="container">
         <div className="user_container">
             <div className="user_left_nav">
-                <h2>My account</h2>
+                <h2>My Account</h2>
                 <div className="links">
                     { generateLinks(links) }
                 </div>
