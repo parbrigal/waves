@@ -9,6 +9,9 @@ import {
 } from "../elements/Form/formActions";
 
 import { registerUser } from "../../store/actions/user_actions";
+
+import { withRouter } from 'react-router-dom';
+
 import { connect } from "react-redux";
 
 class Register extends Component {
@@ -106,7 +109,6 @@ class Register extends Component {
       this.props
         .dispatch(registerUser(dataToSubmit))
         .then(response => {
-            console.log(response);
           if (response.payload.success) {
             this.setState({
               formError: false,
@@ -188,7 +190,7 @@ class Register extends Component {
                 </div>
                 <div>
                   {this.state.formError ? (
-                    <div>Please check your data</div>
+                    <div className="error_label">Please check your data</div>
                   ) : null}
                   <button onClick={ev => this.submitForm(ev)}>
                     Create Account
@@ -209,4 +211,4 @@ class Register extends Component {
     );
   }
 }
-export default connect()(Register);
+export default connect()(withRouter(Register))
