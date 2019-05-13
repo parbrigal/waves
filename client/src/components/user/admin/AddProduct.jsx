@@ -315,7 +315,7 @@ class AddProduct extends Component {
               <div className="error_label">Please check your data</div>
             ) : null}
 
-            <button onClick={ev => this.submitForm(ev)}>Create Account</button>
+            <button onClick={ev => this.submitForm(ev)}>Create Product</button>
           </form>
         </div>
       </UserNav>
