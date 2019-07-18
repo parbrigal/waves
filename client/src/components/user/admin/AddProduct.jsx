@@ -5,8 +5,11 @@ import {
   update,
   generateData,
   isFormValid,
-  populateOptionFields
+  populateOptionFields,
+  resetFields
 } from "../../elements/Form/formActions";
+
+import FileUpload from "../../elements/FileUpload";
 
 import FormField from "../../elements/Form/FormField";
 import { connect } from "react-redux";
@@ -14,8 +17,9 @@ import { connect } from "react-redux";
 import {
   getBrands,
   getWoods,
-  addProduct
-} from "../../../store/actions/product_actions.js";
+  addProduct,
+  clearProduct
+} from "../../../store/actions/product_actions";
 
 class AddProduct extends Component {
   state = {
@@ -182,6 +186,16 @@ class AddProduct extends Component {
         touched: false,
         validationMessage: "",
         showLabel: true
+      },
+      images:{
+        value: [],
+        validation:{
+           required : false
+        },
+        valid: true,
+        touched: false,
+        validationMessage: "",
+        showLabel: true
       }
     }
   };
@@ -215,18 +229,27 @@ class AddProduct extends Component {
 
   resetFieldHandler = () => {
 
-    //const newFormData = resetFields;
+    const newFormData = resetFields(this.state.formData,"products");
     this.setState({
+      formData : newFormData,
       formSuccess : true
     })
+    setTimeout(() => {
+      this.setState({
+        formSuccess:false
+      },() => {
+        this.props.dispatch(clearProduct())
+      }) 
+    },3000)
   }
 
   submitForm = ev => {
     ev.preventDefault();
 
     let dataToSubmit = generateData(this.state.formData, "products");
+    console.log('Submitting......')
+    console.log(dataToSubmit);
     let formIsValid = isFormValid(this.state.formData, "products");
-
     if (formIsValid) {
 
       this.props.dispatch(addProduct(dataToSubmit)).then(() => {
@@ -254,12 +277,31 @@ class AddProduct extends Component {
     });
   };
 
+  imagesHandler = (images) => {
+
+      console.log("this actually happens")
+      const newFormData = {
+        ...this.state.formData
+      }
+      console.log("Images.....")
+      console.log(images);
+      newFormData['images'].value=images
+      newFormData['images'].valid=true
+
+
+    this.setState({
+      formData : newFormData
+    })
+  }
+
   render() {
     return (
       <UserNav>
         <div>
           <h1>Add Product</h1>
           <form onSubmit={ev => this.submitForm(ev)}>
+
+            <FileUpload imagesHandler={(images) => this.imagesHandler(images)} reset={this.state.formSuccess}/>
             <FormField
               id={"name"}
               formData={this.state.formData.name}
