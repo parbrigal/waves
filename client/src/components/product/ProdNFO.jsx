@@ -3,7 +3,6 @@ import OurButton from '../elements/OurButton'
 
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import faTruck from '@fortawesome/fontawesome-free-solid/faTruck'
-import faCheck from '@fortawesome/fontawesome-free-solid/faCheck'
 import faTimes from '@fortawesome/fontawesome-free-solid/faTimes'
 
 const ProdNFO = (props) => {
@@ -41,7 +40,7 @@ const ProdNFO = (props) => {
             <div className="price">$ {detail.price}</div>
             <div className="cart">
                 <OurButton type="add_to_cart_link" runAction={()=> {
-                    console.log('Add to cart')
+                   props.addToCart(detail._id)
                 }}/>    
             </div>
 
@@ -62,7 +61,6 @@ const ProdNFO = (props) => {
     )
 
     const detail = props.detail;
-    console.log(detail)
     return (
         
         <div>
