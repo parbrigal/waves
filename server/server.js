@@ -7,10 +7,28 @@ const cloudinary = require("cloudinary");
 const app = express();
 const mongoose = require("mongoose");
 require("dotenv").config();
+
+
+/*
+--Useful for Debugging dotenv
+console.log(require('dotenv').config())
+*/
+
 console.log("Before DB Connect");
+/*
+--Useful for Debugging dotenv
+console.log("ENV Database :" + process.env.DATABASE);
+*/
+
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.DATABASE);
-console.log("After DB Connect");
+
+
+mongoose.connect(process.env.DATABASE).then(connection => {
+  console.log("Success - Connected to Mongo DB")
+}).catch(error => {
+  console.log(error.message)
+})
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

@@ -1,7 +1,7 @@
 import axios from "axios";
 
-import { SERVER_URL_USERS } from "../../utils/misc";
-import { LOGIN_USER, REGISTER_USER, AUTH_USER,LOGOUT_USER, ADD_CART_TO_USER } from "./types";
+import { SERVER_URL_USERS,SERVER_URL_PRODUCT } from "../../utils/misc";
+import { LOGIN_USER, REGISTER_USER, AUTH_USER,LOGOUT_USER, ADD_CART_TO_USER, GET_CART_ITEMS_USER } from "./types";
 
 export function loginUser(dataToSubmit) {
   const request = axios
@@ -60,5 +60,22 @@ export function addToCart(_id) {
   return {
     type : ADD_CART_TO_USER,
     payload:request
+  }
+}
+
+export function getCartItems(cartItems,userCart) {
+  const request = axios.get(`${SERVER_URL_PRODUCT}/article_by_id?id=${cartItems}&type=array`).then(response => {
+        userCart.forEach(item => {
+          response.data.forEach((k,i) => {
+            if(item.id === k._id) {
+              response.data[i].quantity = item.quantity;
+            }
+          })
+        })
+        return response.data
+  })
+  return {
+    type : GET_CART_ITEMS_USER,
+    payload : request
   }
 }
