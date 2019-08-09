@@ -2,14 +2,17 @@ import React, { Component } from 'react'
 import UserNav from '../../hoc/UserNav';
 
 import { connect } from 'react-redux';
+
 import UserCartBlock from './UserCartBlock';
+
+import { getCartItems } from '../../store/actions/user_actions';
+
+
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import faFrown from '@fortawesome/fontawesome-free-solid/faFrown'
 import faSmile from '@fortawesome/fontawesome-free-solid/faSmile'
 
 class UserCart extends Component {
-
-
     state = {
         loading : true,
         total : 0,
@@ -27,6 +30,10 @@ class UserCart extends Component {
                 user.userData.cart.forEach(item => {
                     cartItem.push(item.id)
                 })
+
+                this.props.dispatch(getCartItems(cartItem,cart)).then(() => {
+                    
+                }) 
             }
 
         }
