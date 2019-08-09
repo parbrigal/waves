@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import UserNav from '../../hoc/UserNav';
 
 import { connect } from 'react-redux';
+import UserCartBlock from './UserCartBlock';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import faFrown from '@fortawesome/fontawesome-free-solid/faFrown'
 import faSmile from '@fortawesome/fontawesome-free-solid/faSmile'
@@ -31,11 +32,21 @@ class UserCart extends Component {
         }
     }
 
+    removeFromCart = () => {
+
+    }
+    
     render() {
         return (
             <UserNav>
             <div>
-                cart
+                <h1>MY CART</h1>
+                <div className="user_cart">
+                    <UserCartBlock products={this.props.user}
+                    type="cart"
+                    removeItem={(id) => this.removeFromCart(id)}
+                    />
+                </div>
             </div>
             </UserNav>
         )
