@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 
 import UserCartBlock from "./UserCartBlock";
 
-import { getCartItems,removeCartItem } from "../../store/actions/user_actions";
+import { getCartItems, removeCartItem, onSuccessBuy } from "../../store/actions/user_actions";
 
 import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import faFrown from "@fortawesome/fontawesome-free-solid/faFrown";
@@ -55,11 +55,11 @@ class UserCart extends Component {
   };
 
   showPurchaseSuccessMessage = () => (
-      <div className="cart_success">
-        <FontAwesomeIcon icon={faSmile} />
-        <div>THANK YOU!</div>
-        <div>Your order is now complete!</div>
-      </div>
+    <div className="cart_success">
+      <FontAwesomeIcon icon={faSmile} />
+      <div>THANK YOU!</div>
+      <div>Your order is now complete!</div>
+    </div>
   );
 
   showEmptyCartMessage = () => (
@@ -71,14 +71,14 @@ class UserCart extends Component {
 
   removeFromCart = (id) => {
     this.props.dispatch(removeCartItem(id)).then(() => {
-        if(this.props.user.cartDetail.length <= 0) {
-            this.setState({
-                showTotal : false
-            })
-        }
-        else {
-            this.calculateTotal(this.props.user.cartDetail)
-        }
+      if (this.props.user.cartDetail.length <= 0) {
+        this.setState({
+          showTotal: false
+        })
+      }
+      else {
+        this.calculateTotal(this.props.user.cartDetail)
+      }
     })
   };
 
@@ -91,9 +91,14 @@ class UserCart extends Component {
   }
 
   transactionSuccess = (data) => {
-    this.setState({
-        showTotal: false,
-        showSuccess : true 
+    this.props.dispatch(onSuccessBuy({ cartDetail: this.props.user.cartDetail, paymentData: data })).then(() => {
+      if (this.props.user.successBuy) {
+        this.setState({
+          showTotal: false,
+          showSuccess: true
+
+        })
+      }
     })
   }
 
@@ -117,19 +122,19 @@ class UserCart extends Component {
             ) : this.state.showSuccess ? (
               this.showPurchaseSuccessMessage()
             ) : (
-              this.showEmptyCartMessage()
-            )}
+                  this.showEmptyCartMessage()
+                )}
           </div>
           {
-              this.state.showTotal ? 
+            this.state.showTotal ?
               <div className="paypal_button_container">
-                    <PayPal toPay={this.state.total} 
-                        transactionError={(data) => this.transactionError(data)}
-                        transactionCancelled={(data) => this.transactionCancelled(data)}
-                        onSuccess={(data) => this.transactionSuccess(data)}    
-                    />
+                <PayPal toPay={this.state.total}
+                  transactionError={(data) => this.transactionError(data)}
+                  transactionCancelled={(data) => this.transactionCancelled(data)}
+                  onSuccess={(data) => this.transactionSuccess(data)}
+                />
               </div>
-              :null
+              : null
           }
         </div>
       </UserNav>
