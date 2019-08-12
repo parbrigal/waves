@@ -4,6 +4,8 @@ const cookieParser = require("cookie-parser");
 const formidable = require("express-formidable");
 const cloudinary = require("cloudinary");
 
+const async = require("async");
+
 const app = express();
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -30,6 +32,7 @@ const { User } = require("./models/user");
 const { Brand } = require("./models/brand");
 const { Wood } = require("./models/wood");
 const { Product } = require("./models/product");
+const { Payment } = require("./models/payment");
 
 //**********************************************************/
 //*--------------------MIDDLEWARE--------------------------*/
@@ -309,21 +312,23 @@ app.post("/api/users/add_to_cart", auth, (req, resp) => {
     });
 
     if (duplicate) {
-        User.findOneAndUpdate({
-          _id:req.user._id,"cart.id":mongoose.Types.ObjectId(req.query.productId)
+      User.findOneAndUpdate(
+        {
+          _id: req.user._id,
+          "cart.id": mongoose.Types.ObjectId(req.query.productId)
         },
         {
-          $inc:{ "cart.$.quantity":1 }
+          $inc: { "cart.$.quantity": 1 }
         },
         {
-          new : true
-        }, 
+          new: true
+        },
         (err, doc) => {
           if (err) return resp.json({ success: false, err });
 
           resp.status(200).json(doc.cart);
         }
-      )
+      );
     } else {
       User.findOneAndUpdate(
         {
@@ -351,6 +356,124 @@ app.post("/api/users/add_to_cart", auth, (req, resp) => {
 
 //**********************************************************/
 //*-------------------END OF ADD TO CART-------------------*/
+//**********************************************************/
+
+app.get("/api/users/removeFromCart", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.user._id },
+    {
+      $pull: {
+        cart: { id: mongoose.Types.ObjectId(req.query._id) }
+      }
+    },
+    { new: true },
+    (err, doc) => {
+      let cart = doc.cart;
+      let array = cart.map(item => {
+        return mongoose.Types.ObjectId(item.id);
+      });
+
+      Product.find({ _id: { $in: array } })
+        .populate("brand")
+        .populate("wood")
+        .exec((err, cartDetail) => {
+          return res.status(200).json({
+            cartDetail,
+            cart
+          });
+        });
+    }
+  );
+});
+
+//**********************************************************/
+//*-------------------REMOVE FROM CART---------------------*/
+//**********************************************************/
+
+//**********************************************************/
+//*------------------END OF REMOVE FROM CART---------------*/
+//**********************************************************/
+
+//**********************************************************/
+//*-----------------------PAYMENTS-------------------------*/
+//**********************************************************/
+
+app.post("/api/users/successBuy", auth, (req, res) => {
+  //user history
+
+  let history = [];
+  let transactionData = {};
+
+  req.body.cartDetail.forEach(item => {
+    history.push({
+      dateOfPurchase: Date.now(),
+      name: item.name,
+      brand: item.brand.name,
+      id: item._id,
+      price: item.price,
+      quantity: item.quantity,
+      paymentId: req.body.paymentData.paymentId
+    });
+  });
+
+  transactionData.user = {
+    id: req.user._id,
+    name: req.user.name,
+    lastname: req.user.lastname,
+    email: req.user.email
+  };
+
+  transactionData.data = req.body.paymentData;
+  transactionData.product = history;
+
+  User.findOneAndUpdate(
+    { _id: req.user._id },
+    { $push: { history, history }, $set: { cart: [] } },
+    { new: true },
+    (err, user) => {
+      if (err) return res.json({ success: false, err });
+
+      const payment = new Payment(transactionData);
+      payment.save((err, doc) => {
+        if (err) return res.json({ success: false, err });
+
+        //Lecture 137
+        let products = [];
+        doc.product.forEach(item => {
+          products.push({ id: item.id, quantity: item.quantity });
+        });
+        async.eachOfSeries(
+          products,
+          /* 2nd argument update */
+          (item, callback) => {
+            Product.update(
+              { _id: item.id },
+              {
+                $inc: {
+                  sold: item.quantity
+                }
+              },
+              { new: false },
+              callback
+            );
+          },
+          /* 3rd argument - what to do when all updates are done */
+          err => {
+            if (err) return res.json({ success: false, err });
+            res.status(200).json({
+              success : true,
+              cart : user.cart,
+              cartDetail : []
+            });
+          }
+        );
+      });
+    }
+  );
+});
+
+//**********************************************************/
+//*--------------------END OF PAYMENTS---------------------*/
 //**********************************************************/
 
 const port = process.env.PORT || 3002;

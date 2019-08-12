@@ -42,7 +42,7 @@ const Footer = () => {
                             <FontAwesomeIcon icon={faEnvelope} className="icon"/>
                             <div className="nfo">
                                 <div>Email</div>
-                                <div>parbrigal@gmail.com</div>
+                                <div>parbrigalDev@gmail.com</div>
                             </div>
                         </div>
                     </div>
