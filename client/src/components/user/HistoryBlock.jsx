@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import moment from 'moment';
 
 const HistoryBlock = (props) => {
     const renderBlocks = () => (
@@ -6,8 +7,11 @@ const HistoryBlock = (props) => {
         props.history.map((prod,i) => (
             <tr key={i}>
                 <td>
-                    
+                   { moment(prod.dateOfPurchase).format("YYYY-MM-DD")}                
                 </td>
+                <td>{prod.brand} {prod.name}</td>
+                <td>$ {prod.price}</td>
+                <td>$ {prod.quantity}</td>
             </tr>
         ))
         : null
