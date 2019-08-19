@@ -6,7 +6,8 @@ import Shop from './components/shop/Shop';
 import DashBoard from './components/user/Dashboard';
 import UserCart from './components/user/UserCart';
 import UpdateProfile from './components/user/UpdateProfile';
-import AddProduct from './components/user/admin/AddProduct'
+import AddProduct from './components/user/admin/AddProduct';
+import ManageSite from './components/user/admin/ManageSite';
 import ManageCategories from './components/user/admin/ManageCategories'
 import Layout from './hoc/Layout';
 import Auth from './hoc/Auth';
@@ -27,6 +28,7 @@ const Routes = () => {
         <Route path="/user/cart" component={Auth(UserCart,true)} />
         <Route path="/user/profile" component={Auth(UpdateProfile,true)} />
         <Route path="/admin/add_product" component={Auth(AddProduct,true)} />
+        <Route path="/admin/site_info" component={Auth(ManageSite,true)} />
         <Route path="/admin/manage_categories" component={Auth(ManageCategories,true)} />
         <Route path="/product_detail/:id" component={Auth(ProductPage,null)} />
         <Route path="/shop" exact component={Auth(Shop,null)} />

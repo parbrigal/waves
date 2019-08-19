@@ -117,6 +117,24 @@ app.get("/api/users/logout", auth, (req, resp) => {
   });
 });
 
+//*******************PERSONAL INFO***************************/
+
+app.post('/api/users/update_profile',auth,(req,resp) => {
+  User.findOneAndUpdate(
+    { _id: req.user_id },
+      {"$set": req.body}
+    ),
+    {new: true}, (err,doc) => {
+      if (err) return resp.json({success:false,err});
+
+      return resp.status(200).send({
+        success:true
+      })
+
+    }
+
+})
+
 //**********************************************************/
 //*----------------------END OF USERS----------------------*/
 //**********************************************************/

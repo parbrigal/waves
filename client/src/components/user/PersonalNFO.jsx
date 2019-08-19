@@ -4,6 +4,8 @@ import FormField from "../elements/Form/FormField";
 
 import { connect } from "react-redux";
 
+import {updateUserProfile,clearUpdateUserProfile} from "../../store/actions/user_actions";
+
 import {
   update,
   generateData,
@@ -66,7 +68,22 @@ class PersonalNFO extends Component {
     let formIsValid = isFormValid(this.state.formData, "update_user");
 
     if (formIsValid) {
-      console.log(dataToSubmit)
+      this.props.dispatch(updateUserProfile(dataToSubmit)).then(() => {
+        if (this.props.user.updateUser.success) {
+
+            this.setState({
+              formSuccess : true  
+            },() => {
+                setTimeout(() => {
+                    this.props.dispatch(clearUpdateUserProfile())
+                    this.setState({
+                        formSuccess: false
+                    })
+                },2000)
+            })
+
+        }
+      })
     } else {
       this.setState({
         formError: true
