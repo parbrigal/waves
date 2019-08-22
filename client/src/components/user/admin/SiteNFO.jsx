@@ -1,28 +1,173 @@
-import React, { Component } from 'react';
-import FormField from '../../elements/Form/FormField'
+import React, { Component } from "react";
+import FormField from "../../elements/Form/FormField";
 import {
-    update,
-    generateData,
-    isFormValid,
-    populateFields
-  } from "../../elements/Form/formActions";
+  update,
+  generateData,
+  isFormValid,
+  populateFields
+} from "../../elements/Form/formActions";
 
-import {connect} from 'react-redux'; 
+import { connect } from "react-redux";
 
 class SiteNFO extends Component {
-    render() {
-        return (
-            <div>
-                form
-            </div>
-        )
+  state = {
+    formError: false,
+    formSuccess: false,
+    formData: {
+      address: {
+        element: "input",
+        value: "",
+        config: {
+          label: "Address",
+          name: "address_input",
+          type: "text",
+          placeholder: "Enter the site address."
+        },
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false,
+        validationMessage: "",
+        showLabel: true
+      },
+      hours: {
+        element: "input",
+        value: "",
+        config: {
+          label: "Business Hours",
+          name: "hours_input",
+          type: "text",
+          placeholder: "Enter Business Hours"
+        },
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false,
+        validationMessage: "",
+        showLabel: true
+      },
+      phone: {
+        element: "input",
+        value: "",
+        config: {
+          label: "Phone No.",
+          name: "phone_input",
+          type: "text",
+          placeholder: "Enter Phone No"
+        },
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false,
+        validationMessage: "",
+        showLabel: true
+      },
+      email: {
+        element: "input",
+        value: "",
+        config: {
+          label: "Email",
+          name: "email_input",
+          type: "text",
+          placeholder: "Enter Email"
+        },
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false,
+        validationMessage: "",
+        showLabel: true
+      }
     }
+  };
+
+  submitForm = ev => {
+    ev.preventDefault();
+
+    let dataToSubmit = generateData(this.state.formData, "site_info");
+    let formIsValid = isFormValid(this.state.formData, "site_info");
+
+    if (formIsValid) {
+    //   this.props
+    //     .dispatch(registerUser(dataToSubmit))
+    //     .then(response => {
+    //       if (response.payload.success) {
+    //         this.setState({
+    //           formError: false,
+    //           formSuccess: true
+    //         });
+
+    //         setTimeout(() => {
+    //           this.props.history.push("/login");
+    //         }, 5000);
+    //       } else {
+    //         this.setState({
+    //           formError: true
+    //         });
+    //       }
+    //     })
+    //     .catch(e => this.setState({ formError: true }));
+    } else {
+      this.setState({
+        formError: true
+      });
+    }
+  };
+
+  updateForm = element => {
+    const newFormData = update(element, this.state.formData, "site_info");
+    this.setState({
+      formError: false,
+      formData: newFormData
+    });
+  };
+
+  render() {
+    return (
+      <div>
+        <form onSubmit={ev => this.submitForm(ev)}>
+            <h1>Site Info</h1>
+          <FormField
+            id={"address"}
+            formData={this.state.formData.address}
+            change={element => this.updateForm(element)}
+          />
+          <FormField
+            id={"hours"}
+            formData={this.state.formData.hours}
+            change={element => this.updateForm(element)}
+          />
+         <FormField
+            id={"phone"}
+            formData={this.state.formData.phone}
+            change={element => this.updateForm(element)}
+          />
+          <FormField
+            id={"email"}
+            formData={this.state.formData.email}
+            change={element => this.updateForm(element)}
+          /> 
+          {this.state.formSuccess ? (
+            <div className="form_success">Success!</div>
+          ) : null}
+          {this.state.formError ? (
+            <div className="error_label">Please check your data</div>
+          ) : null}
+          <button onClick={ev => this.submitForm(ev)}>Save</button>
+        </form>
+      </div>
+    );
+  }
 }
 
 function mapStateToProps(state) {
-    return {
-      site: state.site
-    };
-  }
+  return {
+    site: state.site
+  };
+}
 
 export default connect(mapStateToProps)(SiteNFO);

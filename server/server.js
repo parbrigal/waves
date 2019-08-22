@@ -33,6 +33,7 @@ const { Brand } = require("./models/brand");
 const { Wood } = require("./models/wood");
 const { Product } = require("./models/product");
 const { Payment } = require("./models/payment");
+const { Site } = require("./models/site");
 
 //**********************************************************/
 //*--------------------MIDDLEWARE--------------------------*/
