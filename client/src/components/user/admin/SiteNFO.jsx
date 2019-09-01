@@ -9,6 +9,8 @@ import {
 
 import { connect } from "react-redux";
 
+import { getSiteData,updateSiteData } from '../../../store/actions/site_actions';
+
 class SiteNFO extends Component {
   state = {
     formError: false,
@@ -92,25 +94,17 @@ class SiteNFO extends Component {
     let formIsValid = isFormValid(this.state.formData, "site_info");
 
     if (formIsValid) {
-    //   this.props
-    //     .dispatch(registerUser(dataToSubmit))
-    //     .then(response => {
-    //       if (response.payload.success) {
-    //         this.setState({
-    //           formError: false,
-    //           formSuccess: true
-    //         });
-
-    //         setTimeout(() => {
-    //           this.props.history.push("/login");
-    //         }, 5000);
-    //       } else {
-    //         this.setState({
-    //           formError: true
-    //         });
-    //       }
-    //     })
-    //     .catch(e => this.setState({ formError: true }));
+      this.props.dispatch(updateSiteData(dataToSubmit)).then(() => {
+        this.setState({
+          formSuccess : true
+        },() => {
+          setTimeout(() => {
+            this.setState({
+              formSuccess : false
+            })
+          },2000)
+          })
+        })
     } else {
       this.setState({
         formError: true
@@ -125,6 +119,20 @@ class SiteNFO extends Component {
       formData: newFormData
     });
   };
+
+  componentDidMount() {
+    console.log("Mounting....")
+    this.props.dispatch(getSiteData()).then(() => {
+        console.log(this.props.site.siteData[0])
+
+        const newFormData = populateFields(this.state.formData,this.props.site.siteData[0])
+
+        this.setState({
+            formData : newFormData
+        })
+    }) 
+ 
+  }
 
   render() {
     return (

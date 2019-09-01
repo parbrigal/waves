@@ -120,21 +120,17 @@ app.get("/api/users/logout", auth, (req, resp) => {
 
 //*******************PERSONAL INFO***************************/
 
-app.post('/api/users/update_profile',auth,(req,resp) => {
-  User.findOneAndUpdate(
-    { _id: req.user_id },
-      {"$set": req.body}
-    ),
-    {new: true}, (err,doc) => {
-      if (err) return resp.json({success:false,err});
+app.post("/api/users/update_profile", auth, (req, resp) => {
+  User.findOneAndUpdate({ _id: req.user_id }, { $set: req.body }),
+    { new: true },
+    (err, doc) => {
+      if (err) return resp.json({ success: false, err });
 
       return resp.status(200).send({
-        success:true
-      })
-
-    }
-
-})
+        success: true
+      });
+    };
+});
 
 //**********************************************************/
 //*----------------------END OF USERS----------------------*/
@@ -480,9 +476,9 @@ app.post("/api/users/successBuy", auth, (req, res) => {
           err => {
             if (err) return res.json({ success: false, err });
             res.status(200).json({
-              success : true,
-              cart : user.cart,
-              cartDetail : []
+              success: true,
+              cart: user.cart,
+              cartDetail: []
             });
           }
         );
@@ -493,6 +489,36 @@ app.post("/api/users/successBuy", auth, (req, res) => {
 
 //**********************************************************/
 //*--------------------END OF PAYMENTS---------------------*/
+//**********************************************************/
+
+//**********************************************************/
+//*----------------------SITE------------------------------*/
+//**********************************************************/
+
+app.get("/api/site/site_data", (req, res) => {
+  Site.find({}, (err, site) => {
+    if (err) return res.status(400).send(err);
+    res.status(200).send(site[0].siteInfo);
+  });
+});
+
+app.post("/api/site/site_data", auth, admin, (req, res) => {
+  Site.findOneAndUpdate(
+    { name: "site" },
+    { $set: { siteInfo: req.body } },
+    { new: true },
+    (err, doc) => {
+      if (err) return res.status(400).send(err);
+      return res.status(200).send({
+        success: true,
+        siteInfo: doc.siteInfo
+      });
+    }
+  );
+});
+
+//**********************************************************/
+//*--------------------END OF SITE--------------------------*/
 //**********************************************************/
 
 const port = process.env.PORT || 3002;

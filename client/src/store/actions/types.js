@@ -23,3 +23,6 @@ export const ADD_BRAND = "ADD_BRAND";
 export const BRANDS = "BRANDS";
 export const ADD_WOOD = "ADD_WOOD"
 export const WOODS = "WOODS";
+
+export const GET_SITE_DATA = "GET_SITE_DATA";
+export const UPDATE_SITE_DATA = "UPDATE_SITE_DATA";
